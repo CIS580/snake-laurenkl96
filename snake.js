@@ -12,7 +12,8 @@ var apple;
 var apples = [];
 var lastApple = 0;
 var snake_array=[];
-var m;
+var m = "right";
+var frame_count= 0;
 
 
 make_snake();
@@ -23,8 +24,8 @@ make_snake();
  */
 function loop(newTime) {
   var elapsedTime = newTime - oldTime;
-
-  update(elapsedTime);
+  frame_count++;
+  if(frame_count % 2 == 0) update(elapsedTime);
   render(elapsedTime);
 
   // Flip the back buffer
@@ -35,13 +36,13 @@ function loop(newTime) {
 }
 
 function make_snake(){
-  for(var i = 4; i>=0; i --){
-    var snake= {
-      x:i, y:0,
-    }
+  snake_array = [];
+  for(i = 4; i>=0; i--){
+    var snake = {x:i, y:0};
     snake_array.push(snake);
   }
 }
+
 /**
  * @function update
  * Updates the game state, moving
@@ -51,18 +52,18 @@ function make_snake(){
  * the number of milliseconds passed since the last frame.
  */
 function update(elapsedTime) {
-
+/*
   // TODO: Spawn an apple periodically
   var a = "red";
-  var apple = { 
+  var apple = {
       x: ((Math.random() * cw)/10),
       y: ((Math.random() * ch)/10),
-    }
-    apples.push(apple);
+  }
+  apples.push(apple);
   if(elapsedTime > (lastApple + 1500)){
     lastApple = elapsedTime;
   }
-  
+*/
   // TODO: Move the snake
   // hdx & hdy are the new head coordinates
   var hdx = snake_array[0].x;
@@ -74,15 +75,16 @@ function update(elapsedTime) {
   var head= snake_array.pop();
   head.x=hdx;
   head.y=hdy;
-  snake_array.unshift(head);// puts the head back
+
+  /*
   // TODO: Determine if the snake has moved out-of-bounds (offscreen)
   if(hdx == -1 || hdx == cw/10 || hdy == -1 || hdy ==ch/10){
-    window.requestAnimationFrame(loop); // restart
+    //window.requestAnimationFrame(loop); // restart
   }
   // TODO: Determine if the snake has eaten its tail
   for(var c=0; c<snake_array.length;c++){
     if(snake_array[c].x==hdx && snake_array[c].y == hdy){
-      window.requestAnimationFrame(loop);//restart
+      //window.requestAnimationFrame(loop);//restart
     }
   }
   // TODO: Determine if the snake has eaten an apple
@@ -90,18 +92,19 @@ function update(elapsedTime) {
   if(hdx==apple.x && hdy == apple.y){
     var head={x: hdx, y: hdy}
   }
-  
-
-  
+  */
+  snake_array.unshift(head);// puts the head back
 
 }
+
 document.addEventListener("keypress", keydown);
 function keydown(e){
   var key = e.which;
-  if(key == "37" && m!="right")m="left";
-  else if(key == "38" && m!="down")m="up";
-  else if(key == "39" && m!="left")m="right";
-  else if(key == "38" && m!="up")m="down";
+  console.log('which', e.which, e.key, e.charCode, e.keyCode);
+  if((key == 37 || key == 97) && m!="right")m="left";
+  else if((key == 38 || key == 119) && m!="down")m="up";
+  else if((key == 39 || key == 100)&& m!="left")m="right";
+  else if((key == 40 || key == 115) && m!="up")m="down";
 }
 /**
   * @function render
@@ -110,17 +113,18 @@ function keydown(e){
   * the number of milliseconds passed since the last frame.
   */
 function render(elapsedTime) {
-  backCtx.clearRect(0, 0, backBuffer.width, backBuffer.height);
+  backCtx.fillStyle="white";
+  backCtx.fillRect(0, 0, backBuffer.width, backBuffer.height);
 
   // TODO: Draw the game objects into the backBuffer
   //Apple drawings
-  var appl = apples.pop();
-  backCtx.fillStyle="red";
-  backCtx.fillRect(appl.x,appl.y,10,10);
+  //var appl = apples.pop();
+  //backCtx.fillStyle="red";
+  //backCtx.fillRect(appl.x,appl.y,10,10);
   //Snake drawing
   for(var b = 0; b < snake_array.length; b++){
     backCtx.fillStyle="olive";
-    backCtx.fillRect(snake_array[b].x,snake_array[b].y, 10, 10);
+    backCtx.fillRect(snake_array[b].x*10,snake_array[b].y*10, 10, 10);
   }
 }
 
